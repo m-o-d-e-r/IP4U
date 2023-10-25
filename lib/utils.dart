@@ -39,3 +39,37 @@ int invertNumber(int ip) {
 
   return ip;
 }
+
+
+bool isEmptyValue(String? value) {
+  return (value == null || value.isEmpty);
+}
+
+
+String? validateIP(String? value) {
+  if (isEmptyValue(value)) {
+    return null;
+  }
+
+  RegExp ipRegExp = RegExp(r"^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$");
+
+  if (ipRegExp.matchAsPrefix(value!) == null) {
+    return "Please enter a valid ip address";
+  }
+  return null;
+}
+
+
+String? validatePrefix(String? value) {
+  if (isEmptyValue(value)) {
+    return null;
+  }
+
+  if (int.tryParse(value!) == null) {
+    return "Please enter a valid net prefix";
+  } else if (int.parse(value) < 1 || int.parse(value) > 32) {
+    return "Please enter a valid net prefix";
+  }
+
+  return null;
+}

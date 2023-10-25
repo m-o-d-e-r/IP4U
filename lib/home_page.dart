@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:ip4u/utils.dart';
+import 'package:ip4u/data_block.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -84,7 +85,6 @@ class _HomePageState extends State<HomePage> {
         _networkAddress = _getNetworkAddress();
         _broadcastAddress = _getBroadcastAddress();
         _prefix = _getPrefix();
-//        _subnetsCount = _getSubnetCount();
         _hostsCount = _getHostsCount();        
       } catch (e) {
         
@@ -94,9 +94,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    double appWidth = MediaQuery.of(context).size.width;
-    double mainBodyWidth = appWidth * 0.8;
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -108,7 +105,7 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
-              width: mainBodyWidth,
+              padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -121,17 +118,12 @@ class _HomePageState extends State<HomePage> {
                         hintText: '127.0.0.1',
                       ),
                       validator: (String? value) {
-                        if (value == null || value.isEmpty) {
+                        if (isEmptyValue(value)) {
                           _userIP = null;
                           return null;
                         }
 
-                        RegExp ipRegExp = RegExp(r"^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$");
-
-                        if (ipRegExp.matchAsPrefix(value) == null) {
-                          return "Please enter a valid ip address";
-                        }
-                        return null;
+                        return validateIP(value);
                       },
                       onChanged: (String? data) {
                         _userIP = data;
@@ -145,59 +137,24 @@ class _HomePageState extends State<HomePage> {
                         hintText: '24',
                       ),
                       validator: (String? value) {
-                        if (value == null || value.isEmpty) {
+                        if (isEmptyValue(value)) {
                           _userPrefix = null;
                           return null;
                         }
-
-                        if (int.tryParse(value) == null) {
-                          return "Please enter a valid net prefix";
-                        } else if (int.parse(value) < 1 || int.parse(value) > 32) {
-                          return "Please enter a valid net prefix";
-                        }
-
-                        return null;
+                        
+                        return validatePrefix(value);
                       },
                       onChanged: (String? data) {
                         _userPrefix = data;
                       },
                     ),
                     const SizedBox(height: 50,),
-                    Container(
-                      width: mainBodyWidth,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Row(
-                            children: [
-                              const Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("Network address: "),
-                                  Text("Broadcast address: "),
-                                  Text("Mask: "),
-//                                  Text("Subnetworks count: "),
-                                  Text("Hosts count: "),
-                                ],
-                              ),
-                              Container(
-                                width: mainBodyWidth / 2,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(_networkAddress),
-                                    Text(_broadcastAddress),
-                                    Text(_prefix),
-  //                                  Text("$_subnetsCount"),
-                                    Text("$_hostsCount"),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    )
+                    DataBlock(
+                      networkAddress: _networkAddress,
+                      broadcastAddress: _broadcastAddress,
+                      prefix: _prefix,
+                      hostsCount: _hostsCount
+                    ),
                   ],
                 )
               ),
