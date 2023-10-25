@@ -70,7 +70,9 @@ class _HomePageState extends State<HomePage> {
       return 0;
     }
 
-    return pow(2, 32 - prefixInt).toInt() - 2;
+    int hostCount = pow(2, 32 - prefixInt).toInt();
+
+    return hostCount > 2 ? hostCount - 2 : hostCount;
   }
 
   void _calculate() {
@@ -150,7 +152,7 @@ class _HomePageState extends State<HomePage> {
 
                         if (int.tryParse(value) == null) {
                           return "Please enter a valid net prefix";
-                        } else if (int.parse(value) < 8 || int.parse(value) > 32) {
+                        } else if (int.parse(value) < 1 || int.parse(value) > 32) {
                           return "Please enter a valid net prefix";
                         }
 
