@@ -18,13 +18,15 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  final TextEditingController _entryIPController = TextEditingController();
+  final TextEditingController _entryPrefixController = TextEditingController();
+
   String? _userIP;
   String? _userPrefix;
 
   String _networkAddress = "127.0.0.0";
   String _broadcastAddress = "127.0.0.255";
   String _prefix = "255.255.255.0";
-//  int _subnetsCount = 1;
   int _hostsCount = 254;
 
 
@@ -111,11 +113,19 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   children: [
                     TextFormField(
+                      controller: _entryIPController,
                       textAlign: TextAlign.center,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       textInputAction: TextInputAction.next,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         hintText: '127.0.0.1',
+                        suffix: GestureDetector(
+                          child: const Icon(Icons.clear),
+                          onTap: () {
+                            _entryIPController.clear();
+                            _userIP = null;
+                          },
+                        )
                       ),
                       validator: (String? value) {
                         if (isEmptyValue(value)) {
@@ -130,11 +140,19 @@ class _HomePageState extends State<HomePage> {
                       },
                     ),
                     TextFormField(
+                      controller: _entryPrefixController,
                       textAlign: TextAlign.center,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       textInputAction: TextInputAction.next,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         hintText: '24',
+                        suffix: GestureDetector(
+                          child: const Icon(Icons.clear),
+                          onTap: () {
+                            _entryPrefixController.clear();
+                            _userPrefix = null;
+                          },
+                        )
                       ),
                       validator: (String? value) {
                         if (isEmptyValue(value)) {
